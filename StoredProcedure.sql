@@ -94,6 +94,14 @@ insert into Musteri(ID,Isim,SoyIsim) values (@ID,@Isim,@Soyisim)
 	end
 end
 
+-- Başka bir örnek
+create procedure selectAllCustomersWithMultipleParametre @City nvarchar(50),@Postalcode nvarchar(50)
+as select * from Customers where City = @City and PostalCode = @Postalcode 
+Go
+
+--- Yukardaki örneğin Çağrılması
+exec selectAllCustomersWithMultipleParametre @City = 'London',@PostalCode '12209'
+
 
 
 

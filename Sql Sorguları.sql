@@ -153,5 +153,121 @@ on c.CustomerId = o.CustomerID
 -- Right join kullanýmý 
 Select c.Address,c.Country,o.ShipRegion from Orders o right join Customers c
 on c.CustomerId = o.CustomerID
+---------------------------------------------------------------------------------------
+-- Declare , Set , Print metodlarý kullanýmý 
+---Declare bir deðiþken tanýmlamada kullanýlýr
+declare @BirimFiyat int
+select @BirimFiyat = COUNT(*) from Products
+print @BirimFiyat
+
+----------------------- Karar Yapýlarý ve Döngü Kullanýmý   ---------------
+
+-- Ýf else kullanýmý 
+declare @KullaniciAdi nvarchar(20),@Sifre nvarchar(20)
+set @KullaniciAdi='Hamza'
+set @Sifre='123'
+
+
+if @KullaniciAdi='Hamza' and @Sifre='123'
+begin
+	print 'Kullanici giris iþlemi baþarýlý'
+end
+
+else
+begin
+
+	print 'Kullanici Giriþ iþlemi baþarýsýz'
+end
+
+-- Baþka bir örnek 
+
+declare @ToplamKayitSayisi int
+select @ToplamKayitSayisi=COUNT(*) from Products
+
+
+if @ToplamKayitSayisi<=100
+begin
+		print 'Toplam Sayi 100 den küçük veya eþit'
+end
+else if @ToplamKayitSayisi>100 and @ToplamKayitSayisi<=200
+
+begin
+		print 'Toplam sayý 100 ile 200 arasýndadýr'
+end
+else
+begin
+		print 'Toplam sayý 200 den buyuktur'
+end
+
+-- Case When Kullanýmý 
+select ProductName, UnitPrice ,case
+when UnitPrice > 20 then '20 den düþük'
+else '20 dan da büyük'
+end as [Birim Fiyati]
+from Products
+
+-- While Kullanýmý 
+declare @Isim nvarchar(20)  = 'Hamza Bilgin'
+declare @Sayac int = 0
+
+while @Sayac <= len(@Isim)
+begin 
+print substring(@Isim,1,@Sayac)
+set @Sayac = @Sayac + 1
+end
+
+
+-- Scalar-valued Functions - Tek deðer döndüren fonksiyonlardýr.
+Create function UrunBul
+(@ID int)
+returns nvarchar(200)
+as begin
+declare @BulunanUrun nvarchar(200)
+if(Exists(select * from Products where ProductID=@ID))
+begin select @BulunanUrun=ProductName from Products where ProductID=@ID
+end
+else
+begin
+set @BulunanUrun= 'Urun Bulunamadý'
+end
+return @BulunanUrun
+end
+--- yukarýda yazan fonksiyonun çaðrýlmasý aþaðýdaki gibidir.
+select dbo.UrunBul(1)
+
+-- Table-valued Functions - Tablo döndürür
+Create function UrunBilgileriGetir
+(@ID int)
+returns table
+as 
+return(select * from Products where ProductID=@ID)
+---Yukarýda yazan fonksiyonun çaðrýlmasý aþaðýdaki gibidir.
+select * from dbo.UrunBilgileriGetir(1)
+
+-- Exists komutu - Test eder. Sorgu varsa ise yani sorgudan bir output geliyorsa çalýþýr
+select ShipName from Orders where EXISTS
+(select CompanyName from Customers where Orders.CustomerID = Customers.CustomerID );
+
+
+-- Any ve All kullanýmý - Any de koþul içinde bir tane bile saðlansa yeterli ama all da hepsinin --- saðlanmasý gerekir
+select ShipName from Orders 
+Where CustomerID= Any (select CustomerID from Customers where City = 'Berlin');
+
+select ShipName from Orders 
+Where CustomerID= ALL (select CustomerID from Customers where City = 'Berlin');
+
+-- Select Into kullanýmý - Bir tablodan baþka tabloya veri aktarmamýzý saðlar
+---Bütün tabloyu atarýr aþaðýdaki sorgu
+select * Into BackupAlýnanTablo from customers
+---Sadece belli Sütunlarý da aktarabiliri
+select CustomerID,CompanyName Into BackupAlýnanTablo from customers
+
+-- Insert Into select Kullanýmý - Select Intodan farký aktaracaðýmýz tabloda sütun olmasý gerekiyor
+Insert Into BackUpTablosu(ID) select CustomerID from Customers;
+
+
+
+
+
 
 
