@@ -4,6 +4,9 @@ create database Ornek1
 -- Database silme
 drop database Ornek1
 
+-- Database Backup ALma
+Backup database Northwind to disk ='C:\Users\hamza\Desktop\BackupFile.bak'
+
 --Tablo Oluþturma
 create table Personel
 (
@@ -265,7 +268,11 @@ select CustomerID,CompanyName Into BackupAlýnanTablo from customers
 -- Insert Into select Kullanýmý - Select Intodan farký aktaracaðýmýz tabloda sütun olmasý gerekiyor
 Insert Into BackUpTablosu(ID) select CustomerID from Customers;
 
-
+-- Sql Date formatlarý 
+---Date - format YYYY-MM-DD
+---Datetime - format YYYY-MM-DD HH:MI:SS
+--- SmallDateTime - format YYYY-MM-DD HH:MI:SS
+--- Timestamp - Format net bir sayý verir
 
 
 
